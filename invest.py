@@ -342,18 +342,10 @@ with tab5:
                                          "avg_cur_bal", "mo_sin_old_rev_tl_op", "mo_sin_rcnt_rev_tl_op", "pct_tl_nvr_dlq"])
 
     predict_data_preprocessed = model[:4].transform(predict_data)
-    # shap_value = np.array([shap.TreeExplainer(base_model, feature_perturbation="tree_path_dependent").shap_values(predict_data_preprocessed)[1] for base_model in model[-1].estimators_]).mean(axis=0)
-    shap_values_list = []
-    for base_model in model[-1].estimators_:
-        try:
-            shap_values = shap.TreeExplainer(base_model, feature_perturbation="tree_path_dependent").shap_values(predict_data_preprocessed)[1]
-            shap_values_list.append(shap_values)
-        except IndexError:
-            # SHAP 값이 없는 경우에 대한 처리
-            # 예: 기본값 사용 또는 다른 대체값 설정
-            shap_values_list.append(np.zeros_like(predict_data_preprocessed))  # 예시: 모든 값을 0으로 설정
-    shap_value = np.array(shap_values_list).mean(axis=0)
-    
+    try:
+        shap_value = np.array([shap.TreeExplainer(base_model, feature_perturbation="tree_path_dependent").shap_values(predict_data_preprocessed)[1] for base_model in model[-1].estimators_]).mean(axis=0)
+    except IndexError:
+        st.write('IndexError')
     st.session_state.predict = model.predict(predict_data)
     predict = st.session_state.predict
     predict_proba = model.predict_proba(predict_data)

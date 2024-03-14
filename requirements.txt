@@ -7,8 +7,8 @@ numpy
 pandas
 streamlit
 matplotlib
-streamlit_shaplibrary.preprocessingplotly.express
-streamlit_extras.let_it_rain
+streamlit_shaplibrary
+streamlit_extras
 base64
 time
 random

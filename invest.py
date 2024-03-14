@@ -224,7 +224,7 @@ with tab1:
         st.selectbox("verification_status", options=["Not Verified", "Source Verified", "Verified"], key="verification_status")
         st.slider("last_fico_range_high", min_value=300, max_value=850, key="last_fico_range_high")
         st.slider("last_fico_range_low", min_value=300, max_value=850, key="last_fico_range_low")
-        dit_rng = st.slider("dti", min_value=0, max_value=100, key="dti")
+        dit_rng = st.slider("dti", min_value=0, max_value=50, key="dti")
     with col2:
         st.markdown('### Feature Property')
         col1, col2 = st.columns([0.4,0.6])
@@ -253,8 +253,8 @@ with tab2:
     col1, col2 = st.columns(2)
     with col1:
         st.markdown('### Feature Select')
-        st.slider("revol_util", min_value=1, max_value=100, key="revol_util")
-        st.slider("mo_sin_old_rev_tl_op", min_value=1, max_value=100, key="mo_sin_old_rev_tl_op")
+        st.slider("revol_util", min_value=0, max_value=893, key="revol_util")
+        st.slider("mo_sin_old_rev_tl_op", min_value=2, max_value=852, key="mo_sin_old_rev_tl_op")
     with col2:
         st.markdown('### Feature Property')
         col1, col2 = st.columns([0.4,0.6])
@@ -273,10 +273,10 @@ with tab3:
     col1, col2 = st.columns(2)
     with col1:
         st.markdown('### Feature Select')
-        st.slider("open_acc", min_value=1, max_value=1000, key="open_acc")
-        st.slider("total_acc", min_value=1, max_value=1000, key="total_acc")
-        st.slider("avg_cur_bal", min_value=1, max_value=1000, key="avg_cur_bal")
-        st.slider("pct_tl_nvr_dlq", min_value=1, max_value=1000, key="pct_tl_nvr_dlq")
+        st.slider("open_acc", min_value=1, max_value=90, key="open_acc")
+        st.slider("total_acc", min_value=2, max_value=176, key="total_acc")
+        st.slider("avg_cur_bal", min_value=0, max_value=800008, key="avg_cur_bal")
+        st.slider("pct_tl_nvr_dlq", min_value=0, max_value=100, key="pct_tl_nvr_dlq")
     with col2:
         st.markdown('### Feature Property')
         col1, col2 = st.columns([0.4,0.6])
@@ -299,8 +299,8 @@ with tab4:
     with col1:
         st.markdown('### Feature Select')
         st.selectbox("term", help="대출기간", options=[" 36 months", " 60 months"], key="term")
-        st.slider("loan_amnt", min_value=1, max_value=1000, key="loan_amnt", help="대출금액")
-        st.slider("int_rate", min_value=1, max_value=1000, key="int_rate", help="이자율")
+        st.slider("loan_amnt", min_value=1000, max_value=40000, key="loan_amnt", help="대출금액")
+        st.slider("int_rate", min_value=5.31, max_value=30.99, key="int_rate", help="이자율")
     with col2:
         st.markdown('### Feature Property')
         col1, col2 = st.columns([0.4,0.6])
@@ -342,10 +342,7 @@ with tab5:
                                          "avg_cur_bal", "mo_sin_old_rev_tl_op", "mo_sin_rcnt_rev_tl_op", "pct_tl_nvr_dlq"])
 
     predict_data_preprocessed = model[:4].transform(predict_data)
-    try:
-        shap_value = np.array([shap.TreeExplainer(base_model, feature_perturbation="tree_path_dependent").shap_values(predict_data_preprocessed)[1] for base_model in model[-1].estimators_]).mean(axis=0)
-    except IndexError:
-        st.write('IndexError')
+    shap_value = np.array([shap.TreeExplainer(base_model, feature_perturbation="tree_path_dependent").shap_values(predict_data_preprocessed)[1] for base_model in model[-1].estimators_]).mean(axis=0)
     st.session_state.predict = model.predict(predict_data)
     predict = st.session_state.predict
     predict_proba = model.predict_proba(predict_data)
